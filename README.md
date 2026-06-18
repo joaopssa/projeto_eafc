@@ -1,0 +1,1 @@
+App para ajudar no modo carreira a ver a similaridade de jogadores no jogo FC 26
