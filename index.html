@@ -918,10 +918,20 @@ function avatarSVG(name, size=60) {
 }
 function playerImgEl(p, cls='player-img') {
   const fallback = avatarSVG(p.short_name || 'FC');
-  if (p.player_face_url) {
-    return `<img class="${cls}" src="${p.player_face_url}" onerror="this.src='${fallback}'" alt="${p.short_name}">`;
-  }
-  return `<img class="${cls}" src="${fallback}" alt="${p.short_name}">`;
+  const url = p.player_face_url && p.player_face_url.startsWith('http')
+    ? p.player_face_url
+    : fallback;
+
+  return `
+    <img
+      class="${cls}"
+      src="${url}"
+      alt="${p.short_name}"
+      referrerpolicy="no-referrer"
+      loading="lazy"
+      onerror="this.onerror=null; this.src=avatarSVG(this.alt || 'FC')"
+    >
+  `;
 }
 // ─── SIMILARITY ENGINE v2 ─────────────────────────────────────────────────────
 // Atributos numéricos com pesos por grupo funcional
