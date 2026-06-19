@@ -816,7 +816,7 @@ const CSV_PATH = 'data/FC26_20250921.csv';
 
 async function autoLoad() {
   try {
-    document.getElementById('loadingMsg').textContent = `Lendo ${CSV_PATH}...`;
+    document.getElementById('loadingMsg').textContent = `Lendo a base de dados ...`;
     const res = await fetch(CSV_PATH);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
@@ -826,7 +826,7 @@ async function autoLoad() {
     document.getElementById('loadingSection').style.display = 'none';
     document.getElementById('uploadSection').style.display = 'block';
     document.getElementById('uploadMsg').textContent =
-      `Não foi possível ler ${CSV_PATH} automaticamente. Selecione o arquivo manualmente:`;
+      `Não foi possível ler a base de dados automaticamente. Selecione o arquivo manualmente:`;
   }
 }
 
