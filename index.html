@@ -918,17 +918,15 @@ function avatarSVG(name, size=60) {
 }
 function playerImgEl(p, cls='player-img') {
   const fallback = avatarSVG(p.short_name || 'FC');
-  const url = p.player_face_url && p.player_face_url.startsWith('http')
-    ? p.player_face_url
-    : fallback;
+  const localFace = `assets/player_faces/${p.player_id}.png`;
 
   return `
     <img
       class="${cls}"
-      src="${url}"
+      src="${localFace}"
       alt="${p.short_name}"
       loading="lazy"
-      onerror="this.onerror=null; this.src=avatarSVG(this.alt || 'FC')"
+      onerror="this.onerror=null; this.src='${fallback}'"
     >
   `;
 }
