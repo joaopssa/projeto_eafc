@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FC 26 Scout</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #1a1d24;
+    --border: #252830;
+    --accent: #00e5a0;
+    --accent2: #ffd700;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --danger: #ff4d6d;
+    --blue: #3b82f6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0d1117 0%, #111827 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 26px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .logo span { color: var(--accent); }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .tab {
+    padding: 8px 20px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .tab.active {
+    background: var(--accent);
+    color: #000;
+  }
+  .tab:hover:not(.active) { color: var(--text); background: var(--surface2); }
+
+  .upload-zone {
+    margin: 40px auto;
+    max-width: 560px;
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 60px 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(0,229,160,0.04); }
+  .upload-zone h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 12px 0 8px;
+  }
+  .upload-zone p { color: var(--muted); font-size: 14px; }
+  .upload-zone .icon { font-size: 42px; }
+
+  .upload-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 28px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .upload-btn:hover { opacity: 0.9; }
+
+  /* LAYOUT */
+  .main { max-width: 1300px; margin: 0 auto; padding: 24px 24px 60px; }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .stat-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .stat-chip .val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-chip .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* SEARCH SECTION */
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    color: var(--accent);
+  }
+
+  .search-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); }
+
+  select.search-input { cursor: pointer; }
+
+  .btn {
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* PLAYER CARD */
+  .players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .player-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.15s;
+    position: relative;
+  }
+  .player-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .player-card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,229,160,0.3); }
+  .player-card.reference { border-color: var(--accent2); box-shadow: 0 0 0 2px rgba(255,215,0,0.3); }
+
+  .card-top {
+    background: linear-gradient(135deg, #1a1d24 0%, #0d1117 100%);
+    padding: 18px 18px 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .player-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--surface2);
+    object-fit: cover;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+  }
+  .card-identity {}
+  .player-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+  }
+  .player-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .card-ratings {
+    display: flex;
+    gap: 8px;
+    padding: 10px 18px 14px;
+  }
+  .rating-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+  }
+  .rating-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--accent2);
+    line-height: 1;
+  }
+  .rating-lbl { font-size: 9px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+
+  .similarity-bar {
+    margin: 0 14px 12px;
+    background: var(--border);
+    border-radius: 99px;
+    height: 4px;
+    overflow: hidden;
+  }
+  .similarity-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .similarity-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+    margin: -8px 14px 10px;
+  }
+
+  .badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--accent2);
+    color: #000;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 99px;
+    letter-spacing: 0.5px;
+  }
+  .badge.ref { background: var(--accent2); }
+  .badge.sim { background: var(--accent); }
+
+  .overall-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--accent2);
+  }
+
+  /* TRANSFER SECTION */
+  .transfer-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); font-weight: 600; }
+
+  /* RESULT PANELS */
+  .result-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .result-header {
+    background: var(--surface2);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .result-header h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .pos-tag {
+    background: var(--accent);
+    color: #000;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 99px;
+    text-transform: uppercase;
+  }
+  .value-tag {
+    margin-left: auto;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  .result-players { padding: 12px; display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .mini-player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 220px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .mini-player:hover { border-color: var(--accent); }
+  .mini-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--border);
+    object-fit: cover;
+  }
+  .mini-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .mini-info { font-size: 11px; color: var(--muted); }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty .big { font-size: 48px; margin-bottom: 12px; }
+  .empty h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text); }
+  .empty p { margin-top: 6px; font-size: 14px; }
+
+  /* LOADING */
+  .spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* TOOLTIP/MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 200;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 40px 20px;
+    overflow-y: auto;
+  }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    width: 100%; max-width: 520px;
+    overflow: hidden;
+    margin: auto;
+    flex-shrink: 0;
+  }
+  .modal-header {
+    background: linear-gradient(135deg, #1a1d24 0%, #0d1117 100%);
+    padding: 24px;
+    display: flex; gap: 18px; align-items: center;
+    position: relative;
+  }
+  .modal-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+  .modal-name { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 900; text-transform: uppercase; }
+  .modal-club { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .modal-overall { font-family: 'Barlow Condensed', sans-serif; font-size: 48px; font-weight: 900; color: var(--accent2); line-height: 1; margin-top: 4px; }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); border-radius: 50%;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px;
+  }
+  .modal-body { padding: 20px 24px 24px; }
+  .attrs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .attr-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .attr-row:last-child { border-bottom: none; }
+  .attr-val { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--accent); }
+  .modal-value { color: var(--accent2); font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; }
+
+  /* POSITIONS */
+  .pos-grid { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+  .pos-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .help-text { font-size: 12px; color: var(--muted); margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">FC26 <span>Scout</span></div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('similarity')">🔍 Similaridade</button>
+    <button class="tab" onclick="switchTab('transfer')">💸 Janela de Transferências</button>
+  </div>
+  <div id="headerStatus" style="font-size:12px;color:var(--muted)">Nenhuma base carregada</div>
+</header>
+
+<div class="main">
+  <!-- UPLOAD ZONE (fallback se fetch falhar) -->
+  <div id="uploadSection" style="display:none">
+    <div class="upload-zone" id="dropZone"
+      ondragover="event.preventDefault();this.classList.add('drag')"
+      ondragleave="this.classList.remove('drag')"
+      ondrop="handleDrop(event)">
+      <div class="icon">⚽</div>
+      <h2>Carregar Base FC 26</h2>
+      <p id="uploadMsg">Arraste o arquivo CSV ou clique para selecionar</p>
+      <p class="help-text">data/FC26_20250921.csv</p>
+      <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Selecionar arquivo</button>
+      <input type="file" id="fileInput" accept=".csv" style="display:none" onchange="handleFile(event)">
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="loadingSection" style="text-align:center;padding:80px 20px">
+    <div style="font-size:48px;margin-bottom:16px">⚽</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Carregando base de dados...</div>
+    <div style="color:var(--muted);font-size:14px" id="loadingMsg">Lendo data/FC26_20250921.csv</div>
+    <div style="margin-top:20px"><div class="spinner"></div></div>
+  </div>
+
+  <!-- SIMILARITY TAB -->
+  <div id="similarityTab" style="display:none">
+    <div class="stats-bar" id="statsBar"></div>
+
+    <!-- BUSCA DO JOGADOR REFERÊNCIA -->
+    <p class="section-title">Buscar jogador referência</p>
+    <div class="search-row">
+      <input type="text" class="search-input" id="playerSearch" placeholder="Nome do jogador..." oninput="filterPlayers()" style="max-width:320px">
+      <select class="search-input" id="posFilter" onchange="filterPlayers()" style="max-width:160px">
+        <option value="">Todas posições</option>
+      </select>
+      <select class="search-input" id="leagueFilter" onchange="filterPlayers()" style="max-width:200px">
+        <option value="">Todas ligas</option>
+      </select>
+      <select class="search-input"
+              id="realFaceFilter"
+              onchange="filterPlayers()"
+              style="max-width:160px">
+
+        <option value="">Real Face</option>
+        <option value="yes">Sim</option>
+        <option value="no">Não</option>
+
+      </select>
+      <input type="number" class="search-input" id="topN" value="12" min="5" max="100" style="max-width:90px" placeholder="Top N">
+    </div>
+    <div id="searchResults" style="margin-bottom:24px"></div>
+
+    <!-- FILTROS DOS RESULTADOS SIMILARES -->
+    <div id="similarSection" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+        <p class="section-title" id="similarTitle" style="margin-bottom:0">Jogadores similares</p>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select class="search-input" id="simSortBy" onchange="applySimFilters()" style="max-width:180px;min-width:160px">
+            <option value="similarity">Similaridade</option>
+            <option value="overall">Overall</option>
+            <option value="age">Idade</option>
+            <option value="value_eur">Valor de Mercado</option>
+            <option value="pace">PAC / SPD</option>
+            <option value="shooting">SHO</option>
+            <option value="passing">PAS / KIC</option>
+            <option value="dribbling">DRI / REF</option>
+            <option value="defending">DEF / POS</option>
+            <option value="physic">PHY / HAN</option>
+          </select>
+
+          <select class="search-input" id="simSortDir" onchange="applySimFilters()" style="max-width:120px;min-width:110px">
+            <option value="desc">Maior</option>
+            <option value="asc">Menor</option>
+          </select>
+
+          <button class="btn btn-secondary" onclick="toggleSimFilters()" id="filterToggleBtn" style="font-size:12px;padding:7px 14px">
+            ⚙ Filtrar resultados
+          </button>
+        </div>
+      </div>
+
+      <!-- PAINEL DE FILTROS AVANÇADOS -->
+      <div id="simFiltersPanel" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:18px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px">
+
+          <div class="form-group">
+            <label class="form-label">Liga</label>
+            <select class="search-input" id="fLiga" onchange="applySimFilters()">
+              <option value="">Todas</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">País</label>
+            <select class="search-input" id="fPais" onchange="applySimFilters()">
+              <option value="">Todos</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Arquétipo</label>
+            <select class="search-input" id="fArquetipo" onchange="applySimFilters()">
+              <option value="">Todos</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Real Face</label>
+
+            <select
+              class="search-input"
+              id="fRealFace"
+              onchange="applySimFilters()">
+
+              <option value="">Todos</option>
+              <option value="yes">Sim</option>
+              <option value="no">Não</option>
+
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Overall mín.</label>
+            <input type="number" class="search-input" id="fOvrMin" min="40" max="99" placeholder="Ex: 75" oninput="applySimFilters()">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Overall máx.</label>
+            <input type="number" class="search-input" id="fOvrMax" min="40" max="99" placeholder="Ex: 99" oninput="applySimFilters()">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Idade mín.</label>
+            <input type="number" class="search-input" id="fIdadeMin" min="15" max="45" placeholder="Ex: 18" oninput="applySimFilters()">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Idade máx.</label>
+            <input type="number" class="search-input" id="fIdadeMax" min="15" max="45" placeholder="Ex: 26" oninput="applySimFilters()">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Valor máx. (€)</label>
+            <input type="number" class="search-input" id="fValorMax" min="0" placeholder="Ex: 50000000" oninput="applySimFilters()">
+          </div>
+
+          <div class="form-group" style="align-self:end">
+            <button class="btn btn-secondary" onclick="clearSimFilters()" style="width:100%;font-size:12px">✕ Limpar filtros</button>
+          </div>
+        </div>
+        <div id="filterSummary" style="margin-top:10px;font-size:12px;color:var(--muted)"></div>
+      </div>
+
+      <div class="players-grid" id="similarResults"></div>
+    </div>
+  </div>
+
+  <!-- TRANSFER TAB -->
+  <div id="transferTab" style="display:none">
+    <div class="stats-bar" id="statsBar2"></div>
+    <p class="section-title">Configurar janela de transferências</p>
+    <div class="transfer-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Meu clube</label>
+          <input type="text" class="search-input" id="myClub" placeholder="Ex: Inter, Liverpool..." oninput="filterClubs()">
+          <div id="clubSuggestions" style="position:relative"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Orçamento (€)</label>
+          <input type="number" class="search-input" id="budget" placeholder="Ex: 50000000" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Posições necessárias</label>
+          <div id="positionButtons" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+          <input type="hidden" id="neededPosHidden">
+          <p class="help-text">Clique nas posições que deseja contratar</p>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary" onclick="runTransfer()" style="height:42px">Analisar ✦</button>
+        </div>
+      </div>
+      <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:18px">
+      <p class="section-title" style="font-size:15px;margin-bottom:12px">Filtros avançados</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px">
+        <div class="form-group">
+          <label class="form-label">Liga</label>
+          <select class="search-input" id="tLiga">
+            <option value="">Todas</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">País</label>
+          <select class="search-input" id="tPais">
+            <option value="">Todos</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Arquétipo</label>
+          <select class="search-input" id="tArquetipo">
+            <option value="">Todos</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Overall mín.</label>
+          <input type="number" class="search-input" id="tOvrMin" placeholder="Ex: 75">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Idade máx.</label>
+          <input type="number" class="search-input" id="tIdadeMax" placeholder="Ex: 26">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Valor máx. por jogador (€)</label>
+          <input type="number" class="search-input" id="tValorMax" placeholder="Ex: 30000000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Real Face</label>
+
+          <select class="search-input" id="tRealFace">
+            <option value="">Todos</option>
+            <option value="yes">Sim</option>
+            <option value="no">Não</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="transferResults"></div>
+    <div id="transferCartPanel" class="result-panel" style="display:none">
+      <div class="result-header">
+        <h3>🛒 Carrinho de contratações</h3>
+        <div class="value-tag" id="cartTotal">€0</div>
+      </div>
+      <div id="cartItems" class="result-players"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYER MODAL -->
+<div id="modal" class="modal-overlay" style="display:none" onclick="closeModal(event)">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+let players = [];
+let currentRef = null;
+let clubNames = [];
+let transferCart = [];
+let transferCandidatesCache = [];
+let selectedTransferPositions = [];
+
+const ATTR_KEYS = ['pace','shooting','passing','dribbling','defending','physic'];
+const GK_ATTR_KEYS = [
+  'goalkeeping_diving',
+  'goalkeeping_handling',
+  'goalkeeping_kicking',
+  'goalkeeping_reflexes',
+  'goalkeeping_positioning',
+  'goalkeeping_speed'
+];
+
+const ATTR_LABELS = {
+  pace:'PAC',
+  shooting:'SHO',
+  passing:'PAS',
+  dribbling:'DRI',
+  defending:'DEF',
+  physic:'PHY',
+
+  goalkeeping_diving:'DIV',
+  goalkeeping_handling:'HAN',
+  goalkeeping_kicking:'KIC',
+  goalkeeping_reflexes:'REF',
+  goalkeeping_speed:'SPD',
+  goalkeeping_positioning:'POS'
+};
+
+const DETAIL_KEYS = {
+  'Ataque cruzado':'attacking_crossing','Finalização':'attacking_finishing',
+  'Cabeceio':'attacking_heading_accuracy','Passe curto':'attacking_short_passing',
+  'Bola no ar':'skill_ball_control','Aceleração':'movement_acceleration',
+  'Velocidade sprint':'movement_sprint_speed','Agilidade':'movement_agility',
+  'Chute forte':'power_shot_power','Estamina':'power_stamina','Força':'power_strength',
+  'Visão':'mentality_vision','Posicionamento':'mentality_positioning',
+  'Agressividade':'mentality_aggression','Interceptações':'mentality_interceptions',
+};
+
+// ─── PARSING ──────────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const sep = lines[0].includes(';') ? ';' : ',';
+  const headers = lines[0].split(sep).map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const vals = line.split(sep);
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = vals[i] ? vals[i].trim() : ''; });
+    return obj;
+  }).filter(p => p.short_name && p.overall);
+}
+
+function numify(p) {
+  const ALL_NUM_KEYS = [
+    'pace','shooting','passing','dribbling','defending','physic',
+    'overall','potential','value_eur','wage_eur','age',
+    'attacking_crossing','attacking_finishing','attacking_heading_accuracy',
+    'attacking_short_passing','attacking_volleys','skill_dribbling','skill_curve',
+    'skill_fk_accuracy','skill_long_passing','skill_ball_control',
+    'movement_acceleration','movement_sprint_speed','movement_agility',
+    'movement_reactions','movement_balance','power_shot_power','power_jumping',
+    'power_stamina','power_strength','power_long_shots','mentality_aggression',
+    'mentality_interceptions','mentality_positioning','mentality_vision',
+    'mentality_penalties','mentality_composure','defending_marking_awareness',
+    'defending_standing_tackle','defending_sliding_tackle',
+    'goalkeeping_diving','goalkeeping_handling','goalkeeping_kicking',
+    'goalkeeping_positioning','goalkeeping_reflexes',
+  ];
+  ALL_NUM_KEYS.forEach(k => { p[k] = parseInt(p[k]) || 0; });
+  return p;
+}
+
+// ─── CARREGAMENTO ─────────────────────────────────────────────────────────────
+const CSV_PATH = 'data/FC26_20250921.csv';
+
+async function autoLoad() {
+  try {
+    document.getElementById('loadingMsg').textContent = `Lendo ${CSV_PATH}...`;
+    const res = await fetch(CSV_PATH);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text = await res.text();
+    onDataLoaded(text);
+  } catch (err) {
+    console.warn('Auto-load falhou:', err.message);
+    document.getElementById('loadingSection').style.display = 'none';
+    document.getElementById('uploadSection').style.display = 'block';
+    document.getElementById('uploadMsg').textContent =
+      `Não foi possível ler ${CSV_PATH} automaticamente. Selecione o arquivo manualmente:`;
+  }
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) loadFile(file);
+}
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (file) loadFile(file);
+}
+function loadFile(file) {
+  document.getElementById('uploadSection').style.display = 'none';
+  document.getElementById('loadingSection').style.display = 'block';
+  document.getElementById('loadingMsg').textContent = `Lendo ${file.name}...`;
+  const reader = new FileReader();
+  reader.onload = ev => onDataLoaded(ev.target.result);
+  reader.readAsText(file, 'utf-8');
+}
+
+function onDataLoaded(text) {
+  players = parseCSV(text).map(numify);
+  setupFilters();
+  renderStats();
+  document.getElementById('loadingSection').style.display = 'none';
+  document.getElementById('uploadSection').style.display = 'none';
+  document.getElementById('similarityTab').style.display = 'block';
+  document.getElementById('headerStatus').textContent = `${players.length.toLocaleString()} jogadores carregados`;
+  filterPlayers();
+}
+
+// ─── SETUP DE FILTROS ─────────────────────────────────────────────────────────
+function setupFilters() {
+  const positions  = new Set();
+  const leagues    = new Set();
+  const clubs      = new Set();
+  const nations    = new Set();
+
+  players.forEach(p => {
+    (p.player_positions || '').split(',').forEach(pos => positions.add(pos.trim()));
+    if (p.league_name)       leagues.add(p.league_name);
+    if (p.club_name)         clubs.add(p.club_name);
+    if (p.nationality_name)  nations.add(p.nationality_name);
+  });
+
+  // Filtros de busca (referência)
+  populate('posFilter',   [...positions].sort());
+  populate('leagueFilter',[...leagues].sort());
+
+  // Filtros de transferência
+  renderPositionButtons([...positions].sort());
+  populate('tLiga', [...leagues].sort());
+  populate('tPais', [...nations].sort());
+  populate(
+    'tArquetipo',
+    ARCHETYPES.map(a => a.label).sort(),
+    ARCHETYPES.map(a => a.id).sort((a,b) => {
+      const la = ARCHETYPES.find(x=>x.id===a).label;
+      const lb = ARCHETYPES.find(x=>x.id===b).label;
+      return la.localeCompare(lb);
+    })
+  );
+
+  // Filtros de similaridade avançados
+  populate('fLiga',       [...leagues].sort());
+  populate('fPais',       [...nations].sort());
+  populate('fArquetipo',  ARCHETYPES.map(a => a.label).sort(),
+                          ARCHETYPES.map(a => a.id).sort((a,b) => {
+                            const la = ARCHETYPES.find(x=>x.id===a).label;
+                            const lb = ARCHETYPES.find(x=>x.id===b).label;
+                            return la.localeCompare(lb);
+                          }));
+
+  clubNames = [...clubs].sort();
+}
+
+function populate(id, labels, values) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  (values || labels).forEach((v, i) => {
+    const o = document.createElement('option');
+    o.value = v;
+    o.textContent = labels[i];
+    el.appendChild(o);
+  });
+}
+
+function renderPositionButtons(positions) {
+  const box = document.getElementById('positionButtons');
+  if (!box) return;
+
+  const preferredOrder = [
+    'GK',
+    'LB','LWB','CB','RB','RWB',
+    'CDM','CM','CAM',
+    'LM','LW','RM','RW',
+    'CF','ST'
+  ];
+
+  const ordered = preferredOrder.filter(p => positions.includes(p));
+
+  box.innerHTML = ordered.map(pos => `
+    <button
+      type="button"
+      class="btn btn-secondary"
+      id="posBtn_${pos}"
+      onclick="toggleTransferPosition('${pos}')"
+      style="padding:8px 12px;font-size:12px"
+    >
+      ${pos}
+    </button>
+  `).join('');
+}
+
+function toggleTransferPosition(pos) {
+  if (selectedTransferPositions.includes(pos)) {
+    selectedTransferPositions = selectedTransferPositions.filter(p => p !== pos);
+  } else {
+    selectedTransferPositions.push(pos);
+  }
+
+  document.querySelectorAll('[id^="posBtn_"]').forEach(btn => {
+    const p = btn.id.replace('posBtn_', '');
+    const active = selectedTransferPositions.includes(p);
+
+    btn.style.background = active ? 'var(--accent)' : 'var(--surface2)';
+    btn.style.color = active ? '#000' : 'var(--text)';
+    btn.style.borderColor = active ? 'var(--accent)' : 'var(--border)';
+  });
+}
+
+function renderStats() {
+  const statsBar = document.getElementById('statsBar');
+  const clubs = new Set(players.map(p => p.club_name));
+  const leagues = new Set(players.map(p => p.league_name));
+  const maxOvr = Math.max(...players.map(p => p.overall));
+  statsBar.innerHTML = `
+    <div class="stat-chip"><div class="val">${players.length.toLocaleString()}</div><div class="lbl">Jogadores</div></div>
+    <div class="stat-chip"><div class="val">${clubs.size.toLocaleString()}</div><div class="lbl">Clubes</div></div>
+    <div class="stat-chip"><div class="val">${leagues.size}</div><div class="lbl">Ligas</div></div>
+    <div class="stat-chip"><div class="val">${maxOvr}</div><div class="lbl">Overall máx</div></div>
+  `;
+  document.getElementById('statsBar2').innerHTML = statsBar.innerHTML;
+}
+
+// ─── AVATAR ───────────────────────────────────────────────────────────────────
+const AVATAR_COLORS = [
+  ['#1a3a2a','#00e5a0'], ['#2a1a3a','#a855f7'], ['#3a2a1a','#f97316'],
+  ['#1a2a3a','#3b82f6'], ['#3a1a1a','#ef4444'], ['#2a3a1a','#84cc16'],
+  ['#1a3a3a','#06b6d4'], ['#3a3a1a','#eab308'],
+];
+function avatarColors(name) {
+  let h = 0; for (const c of name) h = (h * 31 + c.charCodeAt(0)) & 0xffff;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+function initials(name) {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+  return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+}
+function avatarSVG(name, size=60) {
+  const [bg, fg] = avatarColors(name);
+  const ini = initials(name);
+  const fs = size * 0.36;
+  return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="${size/2}" fill="${bg}"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-weight="700" font-size="${fs}" fill="${fg}">${ini}</text></svg>`)}`;
+}
+function playerImgEl(p, cls='player-img') {
+
+  const localFace =
+    `assets/player_faces/${p.player_id}.png`;
+
+  return `
+    <img
+      class="${cls}"
+      src="${localFace}"
+      alt="${p.short_name}"
+      loading="lazy"
+      onerror="this.onerror=null;this.src='assets/player_faces/default.png';"
+    >
+  `;
+}
+// ─── SIMILARITY ENGINE v2 ─────────────────────────────────────────────────────
+// Atributos numéricos com pesos por grupo funcional
+const WEIGHTED_ATTRS = [
+  // Grupo velocidade/físico
+  { k: 'movement_acceleration',      w: 1.2 },
+  { k: 'movement_sprint_speed',       w: 1.2 },
+  { k: 'movement_agility',            w: 1.0 },
+  { k: 'movement_reactions',          w: 1.3 },
+  { k: 'movement_balance',            w: 0.8 },
+  { k: 'power_stamina',               w: 1.2 },
+  { k: 'power_strength',              w: 1.0 },
+  { k: 'power_jumping',               w: 0.9 },
+  // Grupo passe/visão
+  { k: 'attacking_short_passing',     w: 1.5 },
+  { k: 'skill_long_passing',          w: 1.4 },
+  { k: 'mentality_vision',            w: 1.5 },
+  { k: 'attacking_crossing',          w: 1.1 },
+  { k: 'skill_curve',                 w: 0.9 },
+  { k: 'skill_fk_accuracy',           w: 0.7 },
+  // Grupo finalização
+  { k: 'attacking_finishing',         w: 1.5 },
+  { k: 'attacking_volleys',           w: 1.0 },
+  { k: 'attacking_heading_accuracy',  w: 1.1 },
+  { k: 'power_shot_power',            w: 1.2 },
+  { k: 'power_long_shots',            w: 1.1 },
+  { k: 'mentality_penalties',         w: 0.7 },
+  // Grupo drible/técnica
+  { k: 'skill_dribbling',             w: 1.3 },
+  { k: 'skill_ball_control',          w: 1.3 },
+  { k: 'mentality_composure',         w: 1.1 },
+  // Grupo defesa/marcação
+  { k: 'defending_marking_awareness', w: 1.5 },
+  { k: 'defending_standing_tackle',   w: 1.4 },
+  { k: 'defending_sliding_tackle',    w: 1.3 },
+  { k: 'mentality_interceptions',     w: 1.4 },
+  { k: 'mentality_aggression',        w: 1.1 },
+  // Grupo posicionamento/mental
+  { k: 'mentality_positioning',       w: 1.3 },
+  // Goleiro
+  { k: 'goalkeeping_diving',          w: 1.0 },
+  { k: 'goalkeeping_handling',        w: 1.0 },
+  { k: 'goalkeeping_kicking',         w: 0.8 },
+  { k: 'goalkeeping_positioning',     w: 1.0 },
+  { k: 'goalkeeping_reflexes',        w: 1.0 },
+];
+
+// Playstyles do FC26 mapeados para flags binárias (presença = +1, ausência = 0)
+// O campo player_traits e player_tags contêm as strings
+const PLAYSTYLE_LIST = [
+  'Relentless','Power Shot','Finesse Shot','Dead Ball','Long Ball Pass',
+  'Whipped Pass','Incisive Pass','Pinged Pass','Technical','First Touch',
+  'Gamechanger','Inventive','Anticipate','Jockey','Block','Intercept',
+  'Slide Tackle','Press Proven','Aerial Fortress','Rapid','Quick Step',
+  'Bruiser','Low Driven Shot','Chip Shot','Tiki Taka','Power Header',
+];
+const PLAYSTYLE_WEIGHT = 18; // peso por playstyle compartilhado (na escala 0-99)
+
+function getPlaystyles(p) {
+  const src = ((p.player_traits || '') + ' ' + (p.player_tags || '')).toLowerCase();
+  return PLAYSTYLE_LIST.filter(ps => src.includes(ps.toLowerCase()));
+}
+
+function calcSim(a, b) {
+  // Parte 1: distância euclidiana ponderada nos atributos numéricos
+  let sumSqW = 0, maxSqW = 0;
+  WEIGHTED_ATTRS.forEach(({ k, w }) => {
+    const va = a[k] || 0;
+    const vb = b[k] || 0;
+    sumSqW += w * (va - vb) ** 2;
+    maxSqW += w * 99 ** 2;
+  });
+  const attrSim = 1 - Math.sqrt(sumSqW / maxSqW);
+
+  // Parte 2: Jaccard nos playstyles
+  const psA = new Set(getPlaystyles(a));
+  const psB = new Set(getPlaystyles(b));
+  const intersection = [...psA].filter(x => psB.has(x)).length;
+  const union = new Set([...psA, ...psB]).size;
+  const playstyleSim = union > 0 ? intersection / union : 1;
+
+  // Combina: 75% atributos, 25% playstyles
+  return attrSim * 0.75 + playstyleSim * 0.25;
+}
+
+// ─── ARQUÉTIPOS ───────────────────────────────────────────────────────────────
+// Cada arquétipo tem um conjunto de atributos-chave e thresholds
+const ARCHETYPES = [
+  {
+    id: 'parada_tiros', label: 'Parada de Tiros', emoji: '🧤',
+    color: '#3b82f6',
+    desc: 'Goleiro de reflexos — especialista em defesas difíceis',
+    test: p => p.goalkeeping_reflexes >= 75 && p.goalkeeping_diving >= 72,
+  },
+  {
+    id: 'goleiro_libero', label: 'Goleiro-Líbero', emoji: '🧤',
+    color: '#06b6d4',
+    desc: 'Goleiro ativo, sai da área, intercepta e distribui bem',
+    test: p => p.goalkeeping_kicking >= 70 && p.goalkeeping_positioning >= 72 && p.skill_long_passing >= 55,
+  },
+  {
+    id: 'rolha', label: 'Rolha', emoji: '🪨',
+    color: '#ef4444',
+    desc: 'Zagueiro físico e combativo — rouba a bola no corpo a corpo',
+    test: p => p.defending_standing_tackle >= 72 && (p.power_strength >= 75 || p.movement_sprint_speed >= 75) && p.defending_marking_awareness >= 68,
+  },
+  {
+    id: 'varredor', label: 'Varredor', emoji: '🫸',
+    color: '#8b5cf6',
+    desc: 'Zagueiro de leitura — cobertura, interceptações e linha defensiva',
+    test: p => p.mentality_interceptions >= 72 && p.defending_marking_awareness >= 72 && p.mentality_vision >= 60,
+  },
+  {
+    id: 'lateral_simples', label: 'Lateral Sem Firulas', emoji: '🛡️',
+    color: '#64748b',
+    desc: 'Lateral defensivo clássico — seguro no um contra um',
+    test: p => p.defending_standing_tackle >= 68 && p.defending_marking_awareness >= 68 && p.attacking_crossing < 72,
+  },
+  {
+    id: 'costas_invertidas', label: 'Costas Invertidas', emoji: '🎯',
+    color: '#a855f7',
+    desc: 'Lateral armador — entra no meio, visão e passe',
+    test: p => p.mentality_vision >= 70 && p.attacking_short_passing >= 72 && p.skill_long_passing >= 68,
+  },
+  {
+    id: 'encosto_asa', label: 'Encosto de Asa', emoji: '⚡',
+    color: '#f97316',
+    desc: 'Lateral ofensivo — velocidade, resistência e sobreposições',
+    test: p => p.movement_sprint_speed >= 78 && p.power_stamina >= 78 && p.attacking_crossing >= 68,
+  },
+  {
+    id: 'destruidor', label: 'Destruidor', emoji: '💥',
+    color: '#dc2626',
+    desc: 'Volante defensivo — proteção do meio, corta jogadas',
+    test: p => p.mentality_interceptions >= 75 && p.defending_marking_awareness >= 72 && p.mentality_aggression >= 70,
+  },
+  {
+    id: 'motor', label: 'Motor', emoji: '🔋',
+    color: '#22c55e',
+    desc: 'Box-to-box — recupera e projeta, une defesa e ataque',
+    test: p => p.power_stamina >= 80 && p.movement_sprint_speed >= 72 && p.defending_standing_tackle >= 65 && p.attacking_short_passing >= 68,
+  },
+  {
+    id: 'regista', label: 'Regista', emoji: '🧠',
+    color: '#0ea5e9',
+    desc: 'Armador profundo — controla o ritmo com passes precisos',
+    test: p => p.mentality_vision >= 80 && p.skill_long_passing >= 78 && p.attacking_short_passing >= 78,
+  },
+  {
+    id: 'apoio_avanco', label: 'Apoio ao Avanço', emoji: '✨',
+    color: '#f59e0b',
+    desc: 'Criador avançado — meias ofensivos, falso 9, pontas invertidos',
+    test: p => p.mentality_vision >= 74 && p.skill_dribbling >= 74 && p.mentality_positioning >= 70,
+  },
+  {
+    id: 'avancando', label: 'Avançando', emoji: '🏃',
+    color: '#10b981',
+    desc: 'Atacante móvel — infiltrações, timing e finalização',
+    test: p => p.movement_sprint_speed >= 78 && p.mentality_positioning >= 78 && p.attacking_finishing >= 72,
+  },
+  {
+    id: 'ponta_aberta', label: 'Ponta Aberta', emoji: '🌪️',
+    color: '#f97316',
+    desc: 'Extremo — estica a defesa, velocidade e cruzamentos',
+    test: p => p.movement_sprint_speed >= 80 && p.movement_agility >= 76 && (p.attacking_crossing >= 70 || p.skill_dribbling >= 76),
+  },
+  {
+    id: 'profundidade', label: 'Profundidade para Frente', emoji: '⚓',
+    color: '#eab308',
+    desc: 'Jogador de referência — retenção, jogo aéreo ou área',
+    test: p => (p.power_strength >= 78 || p.attacking_heading_accuracy >= 75) && p.mentality_positioning >= 72,
+  },
+];
+
+function detectArchetype(p) {
+  const pos = (p.player_positions || '').toUpperCase();
+  const isGK = pos.includes('GK');
+  const isDef = pos.includes('CB') || pos.includes('LB') || pos.includes('RB') || pos.includes('WB');
+  const isMid = pos.includes('CM') || pos.includes('CDM') || pos.includes('CAM') || pos.includes('LM') || pos.includes('RM');
+  const isAtt = pos.includes('ST') || pos.includes('CF') || pos.includes('LW') || pos.includes('RW') || pos.includes('LF') || pos.includes('RF');
+
+  const pool = isGK ? ARCHETYPES.filter(a => a.id.includes('goleiro') || a.id === 'parada_tiros')
+    : isDef ? ARCHETYPES.filter(a => ['rolha','varredor','lateral_simples','costas_invertidas','encosto_asa'].includes(a.id))
+    : isMid ? ARCHETYPES.filter(a => ['destruidor','motor','regista','apoio_avanco'].includes(a.id))
+    : isAtt ? ARCHETYPES.filter(a => ['apoio_avanco','avancando','ponta_aberta','profundidade'].includes(a.id))
+    : ARCHETYPES;
+
+  return pool.find(a => a.test(p)) || null;
+}
+
+function filterPlayers() {
+  const q = document.getElementById('playerSearch').value.toLowerCase();
+  const pos = document.getElementById('posFilter').value;
+  const lg = document.getElementById('leagueFilter').value;
+  const rf = document.getElementById('realFaceFilter').value;
+  let results = players.filter(p => {
+    const nameMatch = p.short_name.toLowerCase().includes(q) || p.long_name.toLowerCase().includes(q);
+    const posMatch = !pos || (p.player_positions || '').includes(pos);
+    const lgMatch = !lg || p.league_name === lg;
+    const faceMatch =
+      !rf ||
+      (
+        rf === 'yes'
+          ? String(p.real_face).toLowerCase() === 'yes'
+          : String(p.real_face).toLowerCase() !== 'yes'
+      );
+    return nameMatch && posMatch && lgMatch && faceMatch;
+  }).slice(0, 30);
+
+  const container = document.getElementById('searchResults');
+  if (!q && !pos && !lg) {
+    container.innerHTML = '<div class="empty"><div class="big">⚽</div><h3>Busque um jogador</h3><p>Digite o nome, filtre por posição ou liga para encontrar o jogador referência.</p></div>';
+    return;
+  }
+  if (results.length === 0) {
+    container.innerHTML = '<div class="empty"><div class="big">🔎</div><h3>Nenhum resultado</h3><p>Tente outro nome ou remova os filtros.</p></div>';
+    return;
+  }
+
+  container.innerHTML = `<p class="section-title">Resultados de busca (${results.length})</p><div class="players-grid">${results.map(p => playerCard(p, false, 0, true)).join('')}</div>`;
+}
+
+// ─── FILTROS AVANÇADOS DE SIMILARIDADE ───────────────────────────────────────
+let _scoredCache = []; // cache dos resultados após calcular similaridade
+let _refCache    = null;
+
+function toggleSimFilters() {
+  const panel = document.getElementById('simFiltersPanel');
+  const btn   = document.getElementById('filterToggleBtn');
+  const open  = panel.style.display === 'none';
+  panel.style.display = open ? 'block' : 'none';
+  btn.textContent = open ? '⚙ Ocultar filtros' : '⚙ Filtrar resultados';
+}
+
+function clearSimFilters() {
+  ['fLiga','fPais','fArquetipo'].forEach(id => document.getElementById(id).value = '');
+  ['fOvrMin','fOvrMax','fIdadeMin','fIdadeMax','fValorMax'].forEach(id => document.getElementById(id).value = '');
+  applySimFilters();
+}
+
+function getSimFilters() {
+  return {
+    liga:      document.getElementById('fLiga').value,
+    pais:      document.getElementById('fPais').value,
+    arquetipo: document.getElementById('fArquetipo').value,
+    realFace:  document.getElementById('fRealFace').value,
+    sortBy: document.getElementById('simSortBy').value,
+    sortDir: document.getElementById('simSortDir').value,
+    ovrMin:    parseInt(document.getElementById('fOvrMin').value)    || 0,
+    ovrMax:    parseInt(document.getElementById('fOvrMax').value)    || 999,
+    idadeMin:  parseInt(document.getElementById('fIdadeMin').value)  || 0,
+    idadeMax:  parseInt(document.getElementById('fIdadeMax').value)  || 999,
+    valorMax:  parseInt(document.getElementById('fValorMax').value)  || Infinity,
+  };
+}
+
+function applySimFilters() {
+  if (!_refCache || _scoredCache.length === 0) return;
+  const f = getSimFilters();
+
+  const filtered = _scoredCache.filter(p => {
+    if (f.liga      && p.league_name !== f.liga)                    return false;
+    if (f.pais      && p.nationality_name !== f.pais)               return false;
+    if (f.arquetipo) {
+      const arch = detectArchetype(p);
+      if (!arch || arch.id !== f.arquetipo)                         return false;
+    }
+    if (
+      f.realFace &&
+      (
+        f.realFace === 'yes'
+          ? String(p.real_face).toLowerCase() !== 'yes'
+          : String(p.real_face).toLowerCase() === 'yes'
+      )
+    )
+      return false;
+    if (p.overall < f.ovrMin || p.overall > f.ovrMax)              return false;
+    if (p.age     < f.idadeMin || p.age   > f.idadeMax)            return false;
+    if (f.valorMax < Infinity && p.value_eur > f.valorMax)         return false;
+    return true;
+  });
+
+  const sorted = [...filtered].sort((a, b) => {
+    const getSortValue = (p) => {
+      if (f.sortBy === 'similarity') return p._sim || 0;
+
+      if ((p.player_positions || '').includes('GK')) {
+        const gkMap = {
+          pace: 'pace',
+          shooting: 'goalkeeping_diving',
+          passing: 'goalkeeping_kicking',
+          dribbling: 'goalkeeping_reflexes',
+          defending: 'goalkeeping_positioning',
+          physic: 'goalkeeping_handling'
+        };
+
+        const key = gkMap[f.sortBy] || f.sortBy;
+        return Number(p[key]) || 0;
+      }
+
+      return Number(p[f.sortBy]) || 0;
+    };
+
+    const av = getSortValue(a);
+    const bv = getSortValue(b);
+
+    return f.sortDir === 'asc'
+      ? av - bv
+      : bv - av;
+  });
+
+  const active = [
+    f.liga      && `Liga: ${f.liga}`,
+    f.pais      && `País: ${f.pais}`,
+    f.arquetipo && `Arq: ${ARCHETYPES.find(a=>a.id===f.arquetipo)?.label}`,
+    f.ovrMin    && `OVR ≥ ${f.ovrMin}`,
+    f.ovrMax < 999 && `OVR ≤ ${f.ovrMax}`,
+    f.idadeMin  && `Idade ≥ ${f.idadeMin}`,
+    f.idadeMax < 999 && `Idade ≤ ${f.idadeMax}`,
+    f.valorMax < Infinity && `Valor ≤ €${formatVal(f.valorMax)}`,
+  ].filter(Boolean);
+
+  document.getElementById('filterSummary').textContent =
+    active.length ? `Filtros ativos: ${active.join(' · ')} — ${sorted.length} resultado(s)` : '';
+
+  renderSimilarResults(_refCache, sorted);
+}
+
+function renderSimilarResults(ref, scored) {
+  const topN = parseInt(document.getElementById('topN').value) || 12;
+  const shown = scored.slice(0, topN);
+  document.getElementById('similarResults').innerHTML = [
+    playerCard(ref, true, 1, false),
+    ...shown.map(p => playerCard(p, false, p._sim, false))
+  ].join('');
+}
+
+function selectReference(pid) {
+  const ref = players.find(p => p.player_id === pid);
+  if (!ref) return;
+  currentRef = ref;
+  _refCache   = ref;
+
+  const topN = parseInt(document.getElementById('topN').value) || 12;
+  _scoredCache = players
+    .filter(p => p.player_id !== ref.player_id)
+    .map(p => ({ ...p, _sim: calcSim(ref, p) }))
+    .sort((a, b) => b._sim - a._sim)
+    .slice(0, 200); // guarda os top-200 para filtragem posterior
+
+  document.getElementById('similarSection').style.display = 'block';
+  document.getElementById('similarTitle').textContent = `Jogadores similares a ${ref.short_name}`;
+
+  // aplica filtros ativos (ou mostra tudo se não houver)
+  applySimFilters();
+  document.getElementById('similarSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function playerCard(p, isRef, sim, isSearch) {
+  const simPct = Math.round(sim * 100);
+  const imgEl = playerImgEl(p, 'player-img');
+  const posStr = (p.player_positions || '').split(',').slice(0,2).map(s => s.trim()).join(' · ');
+  const arch = detectArchetype(p);
+
+  return `<div class="player-card ${isRef ? 'reference' : ''}" onclick="${isSearch ? `selectReference('${p.player_id}')` : `showComparison('${p.player_id}')`}">
+    ${isRef ? '<div class="badge ref">Referência</div>' : (!isSearch && sim > 0 ? `<div class="badge sim">${simPct}% sim</div>` : '')}
+    <div class="overall-badge">${p.overall}</div>
+    <div class="card-top">
+      ${imgEl}
+      <div class="card-identity">
+        <div class="player-name">${p.short_name}</div>
+        <div class="player-meta">${posStr} · ${p.age}a</div>
+        <div class="player-meta" style="color:var(--muted)">${p.club_name || '-'}</div>
+        <div style="height:26px;margin-top:5px">
+          ${
+            arch
+              ? `
+              <div style="
+                display:inline-flex;
+                align-items:center;
+                gap:4px;
+                background:${arch.color}22;
+                border:1px solid ${arch.color}55;
+                border-radius:6px;
+                padding:2px 7px;
+                font-size:10px;
+                font-weight:700;
+                color:${arch.color};
+                text-transform:uppercase;
+                letter-spacing:.4px">
+                ${arch.emoji} ${arch.label}
+              </div>
+              `
+              : ''
+          }
+        </div>
+      </div>
+    </div>
+    ${!isRef && sim > 0 ? `
+    <div class="similarity-bar"><div class="similarity-fill" style="width:${simPct}%"></div></div>
+    <div class="similarity-label">${simPct}% similar</div>
+    ` : ''}
+    <div class="card-ratings">
+      ${
+        (
+          (p.player_positions || '').includes('GK')
+            ? GK_ATTR_KEYS
+            : ATTR_KEYS
+        ).map(k => `<div class="rating-pill"><div class="rating-val">${p[k] || '-'}</div><div class="rating-lbl">${ATTR_LABELS[k] || k}</div></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function showComparison(pid) {
+    const target = players.find(p => p.player_id === pid);
+
+    if (!currentRef || !target) return;
+
+    renderComparisonModal(currentRef, target);
+}
+
+function renderComparisonModal(ref, target) {
+
+  const isGK =
+  (ref.player_positions || '').includes('GK') ||
+  (target.player_positions || '').includes('GK');
+
+  const attrs = isGK
+    ? [
+        ['DIV', 'goalkeeping_diving'],
+        ['HAN', 'goalkeeping_handling'],
+        ['KIC', 'goalkeeping_kicking'],
+        ['REF', 'goalkeeping_reflexes'],
+        ['SPD', 'goalkeeping_speed'],
+        ['POS', 'goalkeeping_positioning']
+      ]
+    : [
+        ['PAC', 'pace'],
+        ['SHO', 'shooting'],
+        ['PAS', 'passing'],
+        ['DRI', 'dribbling'],
+        ['DEF', 'defending'],
+        ['PHY', 'physic']
+      ];
+
+  document.getElementById('modal').style.display = 'flex';
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-header">
+      <div style="width:100%">
+        <div style="
+          display:grid;
+          grid-template-columns:220px 80px 220px;
+          justify-content:center;
+
+          gap:20px;
+          align-items:center;
+        ">
+
+          <div style="text-align:center">
+            ${playerImgEl(ref,'modal-img')}
+            <div class="modal-name" style="font-size:18px">
+              ${ref.short_name}
+            </div>
+
+            <div style="font-size:13px;color:var(--muted)">
+              ${ref.club_name}
+            </div>
+
+            <div style="font-size:13px;color:var(--muted)">
+              ${ref.age} anos
+            </div>
+
+            <div style="font-size:13px;color:var(--muted)">
+              ${ref.player_positions}
+            </div>
+            <div class="modal-overall">
+              ${ref.overall}
+            </div>
+          </div>
+
+          <div style="
+            font-size:28px;
+            font-weight:900;
+            color:var(--accent2);
+          ">
+            VS
+          </div>
+
+          <div style="text-align:center">
+            ${playerImgEl(target,'modal-img')}
+
+            <div class="modal-name" style="font-size:18px">
+              ${target.short_name}
+            </div>
+
+            <div style="font-size:13px;color:var(--muted)">
+              ${target.club_name}
+            </div>
+
+            <div style="font-size:13px;color:var(--muted)">
+              ${target.age} anos
+            </div>
+
+            <div style="font-size:13px;color:var(--muted)">
+              ${target.player_positions}
+            </div>
+
+            <div class="modal-overall">
+              ${target.overall}
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-close" onclick="event.stopPropagation();closeModal();">
+          ✕
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+
+      ${attrs.map(([label,key]) => `
+        <div style="
+          display:grid;
+          grid-template-columns:60px 1fr 60px;
+          align-items:center;
+          padding:10px 0;
+          border-bottom:1px solid var(--border);
+        ">
+
+          <div style="
+            text-align:center;
+            font-weight:700;
+            color:${ref[key] > target[key]
+              ? 'var(--accent)'
+              : 'var(--text)'};
+          ">
+            ${ref[key]}
+          </div>
+
+          <div style="
+            text-align:center;
+            color:var(--muted);
+            font-size:12px;
+            font-weight:700;
+          ">
+            ${label}
+          </div>
+
+          <div style="
+            text-align:center;
+            font-weight:700;
+            color:${target[key] > ref[key]
+              ? 'var(--accent)'
+              : 'var(--text)'};
+          ">
+            ${target[key]}
+          </div>
+
+        </div>
+      `).join('')}
+
+      <div style="
+        margin-top:20px;
+        text-align:center;
+        font-size:14px;
+      ">
+        Similaridade:
+        <span style="
+          color:var(--accent);
+          font-weight:700;
+        ">
+          ${Math.round(calcSim(ref,target)*100)}%
+        </span>
+      </div>
+
+    </div>
+  `;
+}
+
+// ─── TRANSFER ─────────────────────────────────────────────────────────────────
+function filterClubs() {
+  const q = document.getElementById('myClub').value.toLowerCase();
+  const box = document.getElementById('clubSuggestions');
+  if (!q || q.length < 2) { box.innerHTML = ''; return; }
+  const matches = clubNames.filter(c => c.toLowerCase().includes(q)).slice(0, 6);
+  if (!matches.length) { box.innerHTML = ''; return; }
+  box.innerHTML = `<div style="position:absolute;top:2px;left:0;right:0;background:var(--surface2);border:1px solid var(--border);border-radius:8px;z-index:50;overflow:hidden">
+    ${matches.map(c => `<div onclick="document.getElementById('myClub').value='${c}';document.getElementById('clubSuggestions').innerHTML=''" style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border)" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background=''">${c}</div>`).join('')}
+  </div>`;
+}
+
+function runTransfer() {
+  const clubName = document.getElementById('myClub').value.trim();
+  const budget = parseInt(document.getElementById('budget').value) || 0;
+  const neededPositions = selectedTransferPositions;
+
+  const fLiga = document.getElementById('tLiga').value;
+  const fPais = document.getElementById('tPais').value;
+  const fArquetipo = document.getElementById('tArquetipo').value;
+  const fOvrMin = parseInt(document.getElementById('tOvrMin').value) || 0;
+  const fIdadeMax = parseInt(document.getElementById('tIdadeMax').value) || 999;
+  const fValorMax = parseInt(document.getElementById('tValorMax').value) || Infinity;
+  const fRealFace = document.getElementById('tRealFace').value;
+
+  if (!clubName || !budget) {
+    alert('Por favor, preencha o clube e o orçamento.');
+    return;
+  }
+
+  let available = players.filter(p =>
+    p.club_name.toLowerCase() !== clubName.toLowerCase() &&
+    p.value_eur > 0 &&
+    p.value_eur <= budget
+  );
+
+  available = available.filter(p => {
+    const arch = detectArchetype(p);
+
+    if (fLiga && p.league_name !== fLiga) return false;
+    if (fPais && p.nationality_name !== fPais) return false;
+    if (fArquetipo && (!arch || arch.id !== fArquetipo)) return false;
+    if (p.overall < fOvrMin) return false;
+    if (p.age > fIdadeMax) return false;
+    if (fValorMax < Infinity && p.value_eur > fValorMax) return false;
+    if (
+      fRealFace &&
+      (
+        fRealFace === 'yes'
+          ? String(p.real_face).toLowerCase() !== 'yes'
+          : String(p.real_face).toLowerCase() === 'yes'
+      )
+    )
+      return false;
+
+    return true;
+  });
+
+  transferCandidatesCache = available;
+
+  if (available.length === 0) {
+    document.getElementById('transferResults').innerHTML =
+      '<div class="empty"><div class="big">💸</div><h3>Nenhum jogador encontrado</h3><p>Tente aumentar o orçamento ou remover filtros.</p></div>';
+    return;
+  }
+
+  const posGroups = {};
+  const targetPositions = neededPositions.length > 0
+    ? neededPositions
+    : [...new Set(available.flatMap(p => (p.player_positions || '').split(',').map(s => s.trim())))].slice(0, 6);
+
+  targetPositions.forEach(pos => {
+    let candidates = available.filter(p => (p.player_positions || '').includes(pos));
+
+    candidates = candidates.sort((a, b) => {
+      const scoreA = a.overall + (a.potential - a.overall) * 0.5 - (a.value_eur / budget) * 10;
+      const scoreB = b.overall + (b.potential - b.overall) * 0.5 - (b.value_eur / budget) * 10;
+      return scoreB - scoreA;
+    }).slice(0, 8);
+
+    if (candidates.length) posGroups[pos] = candidates;
+  });
+
+  const html = Object.entries(posGroups).map(([pos, cands]) => `
+    <div class="result-panel">
+      <div class="result-header">
+        <div class="pos-tag">${pos}</div>
+        <h3>Melhores opções — ${pos}</h3>
+        <div class="value-tag">até €${formatVal(budget)}</div>
+      </div>
+      <div class="result-players">
+        ${cands.map(p => miniPlayer(p, true)).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('transferResults').innerHTML = html ||
+    '<div class="empty"><p>Nenhuma sugestão encontrada para as posições selecionadas.</p></div>';
+
+  renderCart();
+}
+
+function miniPlayer(p, cartMode = false) {
+  const arch = detectArchetype(p);
+  const inCart = transferCart.some(item => item.player_id === p.player_id);
+
+  return `<div class="mini-player"
+    onclick="${cartMode ? `toggleCart('${p.player_id}')` : `showModal('${p.player_id}')`}"
+    style="${inCart ? 'border-color:var(--accent);box-shadow:0 0 0 1px rgba(0,229,160,.35)' : ''}">
+    ${playerImgEl(p, 'mini-img')}
+    <div>
+      <div class="mini-name">${p.short_name} <span style="color:var(--accent2);font-size:13px">${p.overall}</span></div>
+      <div class="mini-info">${p.club_name} · €${formatVal(p.value_eur)}</div>
+      <div style="display:flex;gap:6px;margin-top:3px;flex-wrap:wrap">
+        <span style="font-size:10px;color:var(--accent)">Pot. ${p.potential}</span>
+        ${arch ? `<span style="font-size:10px;color:${arch.color};font-weight:600">${arch.emoji} ${arch.label}</span>` : ''}
+        ${cartMode ? `<span style="font-size:10px;color:${inCart ? 'var(--danger)' : 'var(--accent2)'};font-weight:700">${inCart ? 'Remover' : 'Adicionar'}</span>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleCart(pid) {
+  const p = players.find(pl => pl.player_id === pid);
+  if (!p) return;
+
+  const exists = transferCart.some(item => item.player_id === pid);
+
+  if (exists) {
+    transferCart = transferCart.filter(item => item.player_id !== pid);
+  } else {
+    transferCart.push(p);
+  }
+
+  renderCart();
+  runTransfer();
+}
+
+function renderCart() {
+  const panel = document.getElementById('transferCartPanel');
+  const items = document.getElementById('cartItems');
+  const totalEl = document.getElementById('cartTotal');
+
+  if (!panel || !items || !totalEl) return;
+
+  if (transferCart.length === 0) {
+    panel.style.display = 'none';
+    items.innerHTML = '';
+    totalEl.textContent = '€0';
+    return;
+  }
+
+  const total = transferCart.reduce((sum, p) => sum + p.value_eur, 0);
+  const budget = parseInt(document.getElementById('budget').value) || 0;
+  const remaining = budget - total;
+
+  panel.style.display = 'block';
+
+  totalEl.innerHTML = `
+    Total: €${formatVal(total)}
+    <span style="color:${remaining >= 0 ? 'var(--accent)' : 'var(--danger)'};margin-left:12px">
+      Restante: €${formatVal(remaining)}
+    </span>
+  `;
+
+  items.innerHTML = transferCart.map(p => `
+    <div class="mini-player" onclick="toggleCart('${p.player_id}')">
+      ${playerImgEl(p, 'mini-img')}
+      <div>
+        <div class="mini-name">${p.short_name} <span style="color:var(--accent2);font-size:13px">${p.overall}</span></div>
+        <div class="mini-info">${p.club_name} · ${p.player_positions} · €${formatVal(p.value_eur)}</div>
+        <div style="font-size:10px;color:var(--danger);font-weight:700;margin-top:3px">Clique para remover</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── MODAL ────────────────────────────────────────────────────────────────────
+const MODAL_ATTR_GROUPS = [
+  { label: 'Ritmo', color: '#f97316', keys: [
+    ['Aceleração','movement_acceleration'],['Sprint','movement_sprint_speed'],
+    ['Agilidade','movement_agility'],['Reações','movement_reactions'],['Equilíbrio','movement_balance'],
+  ]},
+  { label: 'Chute', color: '#ef4444', keys: [
+    ['Finalização','attacking_finishing'],['Chute forte','power_shot_power'],
+    ['Longo alcance','power_long_shots'],['Voleio','attacking_volleys'],
+    ['Pênaltis','mentality_penalties'],['Cabeceio','attacking_heading_accuracy'],
+  ]},
+  { label: 'Passe', color: '#3b82f6', keys: [
+    ['Passe curto','attacking_short_passing'],['Passe longo','skill_long_passing'],
+    ['Visão','mentality_vision'],['Cruzamento','attacking_crossing'],
+    ['Efeito','skill_curve'],['Falta','skill_fk_accuracy'],
+  ]},
+  { label: 'Drible', color: '#a855f7', keys: [
+    ['Drible','skill_dribbling'],['Controle','skill_ball_control'],
+    ['Compostura','mentality_composure'],['Agilidade','movement_agility'],
+  ]},
+  { label: 'Defesa', color: '#22c55e', keys: [
+    ['Marcação','defending_marking_awareness'],['Desarme','defending_standing_tackle'],
+    ['Carrinho','defending_sliding_tackle'],['Interceptação','mentality_interceptions'],
+    ['Agressividade','mentality_aggression'],
+  ]},
+  { label: 'Físico', color: '#eab308', keys: [
+    ['Força','power_strength'],['Salto','power_jumping'],
+    ['Estamina','power_stamina'],['Posicionamento','mentality_positioning'],
+  ]},
+  { label: 'GK', color: '#06b6d4', keys: [
+    ['Mergulho','goalkeeping_diving'],['Mãos','goalkeeping_handling'],
+    ['Chute','goalkeeping_kicking'],['Posicionamento','goalkeeping_positioning'],
+    ['Reflexos','goalkeeping_reflexes'],
+  ]},
+];
+
+function attrColor(val) {
+  if (val >= 85) return '#00e5a0';
+  if (val >= 75) return '#84cc16';
+  if (val >= 65) return '#eab308';
+  if (val >= 55) return '#f97316';
+  return '#ef4444';
+}
+
+function showModal(pid) {
+  const p = players.find(pl => pl.player_id === pid);
+  if (!p) return;
+  const imgHtml = playerImgEl(p, 'modal-img');
+  const positions = (p.player_positions || '').split(',').map(s => s.trim()).filter(Boolean);
+  const arch = detectArchetype(p);
+  const playstyles = getPlaystyles(p);
+
+  // Grupos de atributos
+  const attrsHtml = MODAL_ATTR_GROUPS.map(g => {
+    const rows = g.keys.map(([label, key]) => {
+      const val = p[key] || 0;
+      if (!val) return '';
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:12px;color:var(--muted)">${label}</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:${attrColor(val)}">${val}</span>
+      </div>`;
+    }).filter(Boolean).join('');
+    if (!rows) return '';
+    return `<div style="background:var(--surface2);border-radius:10px;padding:10px 14px;border-left:3px solid ${g.color}">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:${g.color};font-weight:700;margin-bottom:6px">${g.label}</div>
+      ${rows}
+    </div>`;
+  }).filter(Boolean).join('');
+
+  // Playstyles chips
+  const psHtml = playstyles.length
+    ? `<div style="margin:12px 0 0">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin-bottom:8px">Playstyles</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          ${playstyles.map(ps => `<span style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);border-radius:6px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--accent)">${ps}</span>`).join('')}
+        </div>
+      </div>` : '';
+
+  // Arquétipo
+  const archHtml = arch
+    ? `<div style="margin-top:14px;background:${arch.color}15;border:1px solid ${arch.color}44;border-radius:10px;padding:12px;display:flex;align-items:center;gap:12px">
+        <span style="font-size:28px">${arch.emoji}</span>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:${arch.color}">${arch.label}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">${arch.desc}</div>
+        </div>
+      </div>` : '';
+
+  // Similaridade com referência
+  const simHtml = currentRef && p.player_id !== currentRef.player_id
+    ? `<div style="margin-top:12px;background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.2);border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Similaridade com</div>
+          <div style="font-weight:700;font-size:14px;margin-top:2px">${currentRef.short_name}</div>
+        </div>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--accent)">${Math.round(calcSim(currentRef, p) * 100)}%</span>
+      </div>` : '';
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-header">
+      ${imgHtml}
+      <div style="flex:1;min-width:0">
+        <div class="modal-name" style="font-size:20px">${p.long_name || p.short_name}</div>
+        <div class="modal-club">${p.club_name} · ${p.nationality_name} · ${p.age} anos</div>
+        <div style="display:flex;align-items:baseline;gap:10px;margin-top:4px">
+          <div class="modal-overall">${p.overall}</div>
+          <span style="font-size:14px;color:var(--muted)">/ ${p.potential} pot.</span>
+        </div>
+      </div>
+      <div class="modal-close" onclick="document.getElementById('modal').style.display='none'">✕</div>
+    </div>
+    <div class="modal-body" style="max-height:70vh;overflow-y:auto">
+      <div class="pos-grid">${positions.map(pos => `<span class="pos-badge">${pos}</span>`).join('')}</div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0">
+        <div style="text-align:center;background:var(--surface2);border-radius:8px;padding:10px 6px">
+          <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Valor</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--accent2);margin-top:3px">€${formatVal(p.value_eur)}</div>
+        </div>
+        <div style="text-align:center;background:var(--surface2);border-radius:8px;padding:10px 6px">
+          <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Salário</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--accent2);margin-top:3px">€${formatVal(p.wage_eur)}</div>
+        </div>
+        <div style="text-align:center;background:var(--surface2);border-radius:8px;padding:10px 6px">
+          <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Liga</div>
+          <div style="font-size:11px;font-weight:600;margin-top:3px;line-height:1.2">${p.league_name || '-'}</div>
+        </div>
+        <div style="text-align:center;background:var(--surface2);border-radius:8px;padding:10px 6px">
+          <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Pé</div>
+          <div style="font-size:13px;font-weight:600;margin-top:3px">${p.preferred_foot || '-'}</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        ${ATTR_KEYS.map(k => `
+          <div style="background:var(--surface2);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-left:3px solid ${attrColor(p[k])}">
+            <span style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)">${k}</span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:${attrColor(p[k])}">${p[k] || '-'}</span>
+          </div>`).join('')}
+      </div>
+
+      ${archHtml}
+      ${psHtml}
+
+      <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        ${attrsHtml}
+      </div>
+
+      ${simHtml}
+    </div>
+  `;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal(event) {
+  if (event) event.stopPropagation();
+
+  document.getElementById('modal').style.display = 'none';
+  document.getElementById('modalContent').innerHTML = '';
+}
+
+// ─── TAB SWITCH ───────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t, i) =>
+    t.classList.toggle('active', (i === 0 && tab === 'similarity') || (i === 1 && tab === 'transfer'))
+  );
+  const hasData = players.length > 0;
+  document.getElementById('loadingSection').style.display  = 'none';
+  document.getElementById('uploadSection').style.display   = hasData ? 'none' : (document.getElementById('uploadSection').style.display);
+  document.getElementById('similarityTab').style.display   = hasData && tab === 'similarity' ? 'block' : 'none';
+  document.getElementById('transferTab').style.display     = hasData && tab === 'transfer'   ? 'block' : 'none';
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+autoLoad();
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function formatVal(v) {
+  if (!v) return '0';
+  if (v < 0) return '-' + formatVal(Math.abs(v));
+  if (v >= 1e9) return (v / 1e9).toFixed(1) + 'B';
+  if (v >= 1e6) return (v / 1e6).toFixed(1) + 'M';
+  if (v >= 1e3) return (v / 1e3).toFixed(0) + 'K';
+  return v.toString();
+}
+</script>
+</body>
+</html>
